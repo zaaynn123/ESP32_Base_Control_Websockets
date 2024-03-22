@@ -1,0 +1,9 @@
+-- The C compiler identification is unknown
+-- The CXX compiler identification is unknown
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - failed
+-- Check for working C compiler: D:/msys64/ucrt64/bin/cc.exe
+-- Check for working C compiler: D:/msys64/ucrt64/bin/cc.exe - broken
+-- Configuring incomplete, errors occurred!
+See also "E:/ESP32_Web/esp-idf-vscode-boilerplate/main/build/CMakeFiles/CMakeOutput.log".
+See also "E:/ESP32_Web/esp-idf-vscode-boilerplate/main/build/CMakeFiles/CMakeError.log".
