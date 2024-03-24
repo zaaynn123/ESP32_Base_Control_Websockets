@@ -77,6 +77,7 @@
             <p><button id="button1" class="button">FORWARD</button></p>
             <p><button id="button2" class="button">LEFT</button></p>
             <p><button id="button3" class="button">RIGHT</button></p>
+            <p><button id="button4" class="button">REVERSE</button></p>
         </div>
     </div>
     </div>
@@ -115,6 +116,7 @@
             document.getElementById('button1').addEventListener('click', forward);
             document.getElementById('button2').addEventListener('click', left);
             document.getElementById('button3').addEventListener('click', right);
+            document.getElementById('button4').addEventListener('click', reverse);
 
         }
         function forward() {
@@ -125,6 +127,9 @@
         }
         function right() {
             websocket.send('right');
+        }
+        function reverse() {
+            websocket.send('reverse');
         }
     </script>
 </body>
