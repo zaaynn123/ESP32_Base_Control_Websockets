@@ -32,7 +32,7 @@
 #define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** 13) * 50% = 4096
 #define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
 
-static void example_ledc_init(int gpio_numb)
+static void example_ledc_init(int gpio_numb, int channel)
 {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {
@@ -47,7 +47,7 @@ static void example_ledc_init(int gpio_numb)
     // Prepare and then apply the LEDC PWM channel configuration
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_MODE,
-        .channel        = LEDC_CHANNEL,
+        .channel        = channel,
         .timer_sel      = LEDC_TIMER,
         .intr_type      = LEDC_INTR_DISABLE,
         .gpio_num       = gpio_numb,
@@ -64,7 +64,12 @@ int forward = 0;
 int reverse = 0;
 int left = 0;
 int right = 0;
-
+int R_EN = 18;
+int L_EN = 19;
+int R_PWM = 5;
+int L_PWM = 22;
+int RR = 12;
+int LL = 14;
 
 void Control( void * pvParameters )
 {
@@ -72,33 +77,78 @@ void Control( void * pvParameters )
     {
         if(strcmp(instruction, "forward") == 0){
            if(forward){      
-           example_ledc_init(5);  
+           example_ledc_init(R_PWM,LEDC_CHANNEL);  
            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+           example_ledc_init(L_PWM, LEDC_CHANNEL_1);
+           ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+           ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));      
            ESP_LOGI(TAG, "In Forward");}
            else{
+           example_ledc_init(R_PWM,LEDC_CHANNEL);          
+           ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
+           ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+           example_ledc_init(L_PWM, LEDC_CHANNEL_1);
+           ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+           ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1)); 
            ESP_LOGI(TAG, "STOP(Forward)");
         }
         }
         else if(strcmp(instruction, "reverse") == 0){
-            if(reverse){      
+            if(reverse){    
+            example_ledc_init(L_PWM,LEDC_CHANNEL);  
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+            example_ledc_init(R_PWM, LEDC_CHANNEL_1);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));    
             ESP_LOGI(TAG, "In Reverse");}
             else{
+            example_ledc_init(R_PWM,LEDC_CHANNEL);          
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+            example_ledc_init(L_PWM, LEDC_CHANNEL_1);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1)); 
             ESP_LOGI(TAG, "STOP(Reverse)");
         }
         }
         else if(strcmp(instruction, "left") == 0){
-            if(left){      
+            if(left){
+            example_ledc_init(LL,LEDC_CHANNEL_2);  
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, LEDC_DUTY));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+            example_ledc_init(RR, LEDC_CHANNEL_3);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_3, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_3));        
             ESP_LOGI(TAG, "In Left");}
             else{
+            example_ledc_init(LL,LEDC_CHANNEL_2);  
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+            example_ledc_init(RR, LEDC_CHANNEL_3);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_3, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_3));   
             ESP_LOGI(TAG, "STOP(Left)");
         }
         }
         else if(strcmp(instruction, "right") == 0)
         {
-            if(right){   
+            if(right){
+            example_ledc_init(RR,LEDC_CHANNEL_2);  
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, LEDC_DUTY));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+            example_ledc_init(LL, LEDC_CHANNEL_3);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_3, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_3));        
             ESP_LOGI(TAG, "In Right");}
             else{
+            example_ledc_init(LL,LEDC_CHANNEL_2);  
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+            example_ledc_init(RR, LEDC_CHANNEL_3);
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_3, 0));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_3)); 
             ESP_LOGI(TAG, "STOP(Right)");
         }
         }
@@ -373,6 +423,20 @@ void app_main()
     {
         esp_rom_gpio_pad_select_gpio(LED_PIN);
         gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
+        esp_rom_gpio_pad_select_gpio(L_EN);
+        gpio_set_direction(L_EN, GPIO_MODE_OUTPUT);
+        esp_rom_gpio_pad_select_gpio(R_EN);
+        gpio_set_direction(R_EN, GPIO_MODE_OUTPUT);
+        gpio_set_level(L_EN, 1);
+        gpio_set_level(R_EN, 1);
+        example_ledc_init(5, LEDC_CHANNEL);
+        /*          
+        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 4096));
+        ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+        example_ledc_init(L_PWM, LEDC_CHANNEL_1);
+        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+        ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1)); 
+        */
 
         led_state = 0;
         ESP_LOGI(TAG, "ESP32 ESP-IDF WebSocket Web Server is running ... ...\n");
